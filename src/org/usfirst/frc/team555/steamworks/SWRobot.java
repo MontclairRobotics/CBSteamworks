@@ -1,5 +1,6 @@
 package org.usfirst.frc.team555.steamworks;
 
+
 import org.montclairrobotics.cyborg.*;
 import org.montclairrobotics.cyborg.assemblies.CBDriveModule;
 import org.montclairrobotics.cyborg.assemblies.CBSrxArrayController;
@@ -8,15 +9,10 @@ import org.montclairrobotics.cyborg.controllers.CBDifferentialDriveController;
 import org.montclairrobotics.cyborg.data.CBLogicData;
 import org.montclairrobotics.cyborg.data.CBStdDriveControlData;
 import org.montclairrobotics.cyborg.data.CBStdDriveRequestData;
-import org.montclairrobotics.cyborg.devices.CBAxis;
-import org.montclairrobotics.cyborg.devices.CBButton;
-import org.montclairrobotics.cyborg.devices.CBCANTalon;
 import org.montclairrobotics.cyborg.devices.CBDashboardChooser;
-import org.montclairrobotics.cyborg.devices.CBDeviceId;
-import org.montclairrobotics.cyborg.devices.CBDigitalInput;
-import org.montclairrobotics.cyborg.devices.CBEncoder;
-import org.montclairrobotics.cyborg.mappers.CBArcadeDriveMapper;
 import org.montclairrobotics.cyborg.devices.CBNavX;
+import org.montclairrobotics.cyborg.devices.CBDeviceEnum;
+import org.montclairrobotics.cyborg.mappers.CBArcadeDriveMapper;
 import org.montclairrobotics.cyborg.utils.*;
 import org.montclairrobotics.cyborg.utils.CBEnums.CBDriveMode;
 
@@ -37,35 +33,118 @@ public class SWRobot extends Cyborg {
 	// List Custom Hardware Devices...
 	// This should include all of the active devices
 	//
-	private class Devices {
-		private CBDeviceId
+	//private class Devices {
+	//	private CBDeviceId
 			// input
-			autoSelect,autoAlliance,
-			navx,
-			gearAutoOpenButton,
-			gearAutoCloseButton,
-			gearManualLeftOpenButton,
-			gearManualLeftCloseButton,
-			gearManualRightOpenButton,
-			gearManualRightCloseButton,
-			climbButton,
-			forwardAxis, rotationAxis,
-			gyroLockButton, //spinPov,
-			leftOpenSwitch, leftCloseSwitch,
-			rightOpenSwitch, rightCloseSwitch,
+			//autoSelect,autoAlliance
+			//navx
+			//gearAutoOpenButton,
+			//gearAutoCloseButton,
+			//gearManualLeftOpenButton,
+			//gearManualLeftCloseButton,
+			//gearManualRightOpenButton,
+			//gearManualRightCloseButton,
+			//climbButton,
+			//forwardAxis, rotationAxis,
+			//gyroLockButton //spinPov,
+			//leftOpenSwitch, leftCloseSwitch,
+			//rightOpenSwitch, rightCloseSwitch
 			// output
-			driveMotorLeft1, driveMotorLeft2,
-			driveMotorRight1, driveMotorRight2,		
-			driveEncoderLeft, driveEncoderRight,
-			climbMotorLeft,climbMotorRight,
-			gearMotorLeft, gearMotorRight
+			//driveMotorLeft1, driveMotorLeft2,
+			//driveMotorRight1, driveMotorRight2,		
+			//driveEncoderLeft, driveEncoderRight
+			//climbMotorLeft,climbMotorRight,
+			//gearMotorLeft, gearMotorRight
 			;
+	//}
+	//private Devices devices = new Devices();
+	
+	
+	
+	
+	
+	enum Devs implements CBDeviceEnum {
+		driveEncoderLefta, driveEncoderLeftb,
+		driveEncoderRighta, driveEncoderRightb,
+		leftOpenSwitch, leftCloseSwitch,
+		rightOpenSwitch, rightCloseSwitch,
+		// output
+		driveMotorLeft1,driveMotorLeft2,driveMotorRight1,driveMotorRight2,
+		gearMotorLeft,gearMotorRight,climbMotorLeft,climbMotorRight,
+		// Input Controllers
+		driveStick, operStick,
+		forwardAxis, rotationAxis,
+		// Input buttons
+		gearAutoOpenButton,
+		gearAutoCloseButton,
+		gearManualLeftOpenButton,
+		gearManualLeftCloseButton,
+		gearManualRightOpenButton,
+		gearManualRightCloseButton,
+		climbButton,
+		gyroLockButton, 
 	}
-	private Devices devices = new Devices();
 
+	
+	
+	
 	@Override
 	public void cyborgInit() {
 
+		// hardware configuration
+		canBus
+			.add(Devs.driveMotorRight1, 1)
+			.add(Devs.driveMotorRight2, 2)
+			.add(Devs.driveMotorLeft1, 3)
+			.add(Devs.driveMotorLeft2, 4)
+			.add(Devs.gearMotorLeft, 5)
+			.add(Devs.gearMotorRight, 6)
+			.add(Devs.climbMotorLeft, 7)
+			.add(Devs.climbMotorRight, 8)
+			;
+		
+		pdbSlots
+			.add(Devs.driveMotorLeft1, 0)
+			.add(Devs.driveMotorLeft2, 1)
+			.add(Devs.driveMotorRight1, 2)
+			.add(Devs.driveMotorRight2, 3)
+			.add(Devs.gearMotorLeft, 4)
+			.add(Devs.gearMotorRight, 5)
+			.add(Devs.climbMotorLeft, 6)
+			.add(Devs.climbMotorRight, 7)
+			;
+		
+		dioBus
+			.add(Devs.leftCloseSwitch, 0)
+			.add(Devs.leftOpenSwitch, 1)
+			.add(Devs.driveEncoderLefta, 2)
+			.add(Devs.driveEncoderLeftb, 3)
+			.add(Devs.driveEncoderRighta, 4)
+			.add(Devs.driveEncoderRightb, 5)
+			.add(Devs.rightCloseSwitch, 6)
+			.add(Devs.rightOpenSwitch, 7)
+			;
+		
+		stickList
+			.add(Devs.driveStick, 1)
+			.add(Devs.operStick, 0)
+			;
+		
+		axisList
+			.add(Devs.forwardAxis, Devs.driveStick, 1)
+			.add(Devs.rotationAxis, Devs.driveStick, 0)
+			;
+		
+		buttonList
+			.add(Devs.gearAutoOpenButton, Devs.operStick, 1)
+			.add(Devs.gearAutoCloseButton, Devs.operStick, 2)
+			.add(Devs.gearManualLeftOpenButton, Devs.operStick, 3)
+			.add(Devs.gearManualLeftCloseButton, Devs.operStick, 4)
+			.add(Devs.gearManualRightOpenButton, Devs.operStick, 5)
+			.add(Devs.gearManualRightCloseButton, Devs.operStick, 6)
+			.add(Devs.climbButton, Devs.operStick, 7)
+			;
+				
 		//
 		// Data Initialization
 		//
@@ -85,81 +164,81 @@ public class SWRobot extends Cyborg {
 		//
 		// Configure Hardware Adapter
 		//
-		Cyborg.hardwareAdapter = 
-				new CBHardwareAdapter(this)
-				.setJoystickCount(2);
-		CBHardwareAdapter ha = Cyborg.hardwareAdapter;		
+		//Cyborg.hardwareAdapter = 
+		//		new CBHardwareAdapter(this)
+		//		.setJoystickCount(2);
+		//CBHardwareAdapter ha = Cyborg.hardwareAdapter;		
 		
 		// Robot Hardware 
 		// Input devices
-		devices.navx 				= ha.add(new CBNavX(SPI.Port.kMXP));
+		//devices.navx 				= ha.add(new CBNavX(SPI.Port.kMXP));
 
-		devices.driveEncoderLeft 	= ha.add(
-				new CBEncoder(2, 3, EncodingType.k4X, true, 4*76.25/5865)
-				);
-		devices.driveEncoderRight 	= ha.add(
-				new CBEncoder(4, 5, EncodingType.k4X, true, 4*76.25/5865)
-				);
+		//devices.driveEncoderLeft 	= ha.add(
+		//		new CBEncoder(2, 3, EncodingType.k4X, true, 4*76.25/5865)
+		//		);
+		//devices.driveEncoderRight 	= ha.add(
+		//		new CBEncoder(4, 5, EncodingType.k4X, true, 4*76.25/5865)
+		//		);
 
 		
 		// Driver's Station Controls	
-		devices.forwardAxis 	= ha.add(
-				new CBAxis(driveStickId, 1)
-				.setDeadzone(0.1)
-				.setScale(-1.0) // stick forward => robot forward
-				);
-		devices.rotationAxis 	= ha.add(
-				new CBAxis(driveStickId, 0)
-				.setDeadzone(0.1)
-				.setScale(-1.0) // stick left => robot left/counterClockwise
-				);
+		//devices.forwardAxis 	= ha.add(
+		//		new CBAxis(driveStickId, 1)
+		//		.setDeadzone(0.1)
+		//		.setScale(-1.0) // stick forward => robot forward
+		//		);
+		//devices.rotationAxis 	= ha.add(
+		//		new CBAxis(driveStickId, 0)
+		//		.setDeadzone(0.1)
+		//		.setScale(-1.0) // stick left => robot left/counterClockwise
+		//		);
 		//devices.forward2Axis 	= ha.add(
 		//		new CBAxis(operStickId, 1)
 		//		.setDeadzone(0.1)
 		//		.setScale(-1.0) // stick forward => robot forward
 		//		); // for Tank drive
 		
-		devices.gearAutoOpenButton			= ha.add(new CBButton(operStickId, 1));
-		devices.gearAutoCloseButton			= ha.add(new CBButton(operStickId, 2));
-		devices.gearManualLeftOpenButton	= ha.add(new CBButton(operStickId, 3));
-		devices.gearManualLeftCloseButton	= ha.add(new CBButton(operStickId, 4));
-		devices.gearManualRightOpenButton	= ha.add(new CBButton(operStickId, 5));
-		devices.gearManualRightCloseButton	= ha.add(new CBButton(operStickId, 6));
-		devices.climbButton					= ha.add(new CBButton(operStickId, 7));
+		//devices.gearAutoOpenButton			= ha.add();
+		//devices.gearAutoCloseButton			= ha.add(new CBButton(operStickId, 2));
+		//devices.gearManualLeftOpenButton	= ha.add(new CBButton(operStickId, 3));
+		//devices.gearManualLeftCloseButton	= ha.add(new CBButton(operStickId, 4));
+		//devices.gearManualRightOpenButton	= ha.add(new CBButton(operStickId, 5));
+		//devices.gearManualRightCloseButton	= ha.add(new CBButton(operStickId, 6));
+		//devices.climbButton					= ha.add(new CBButton(operStickId, 7));
 		
-		devices.leftCloseSwitch		= ha.add(new CBDigitalInput(0));
-		devices.leftOpenSwitch		= ha.add(new CBDigitalInput(1));
-		devices.rightCloseSwitch 	= ha.add(new CBDigitalInput(6));
-		devices.rightOpenSwitch 	= ha.add(new CBDigitalInput(7));
+		//devices.leftCloseSwitch		= ha.add(new CBDigitalInput(0));
+		//devices.leftOpenSwitch		= ha.add(new CBDigitalInput(1));
+		//devices.rightCloseSwitch 	= ha.add(new CBDigitalInput(6));
+		//devices.rightOpenSwitch 	= ha.add(new CBDigitalInput(7));
 
 
 		//devices.spinPov 		= ha.add(new CBPov(operStickId, 0));
 
-		devices.autoSelect		= ha.add(
-				new CBDashboardChooser<Integer>("Auto:")
-				.setTiming(CBGameMode.preGame, 0)
-				.addDefault("Select", -1)
-				.addChoice("Center", 1)
-				.addChoice("Left", 2)
-				.addChoice("Right", 3)
-				);
-		devices.autoAlliance	= ha.add(
-				new CBDashboardChooser<Integer>("Alliance:")
-				.setTiming(CBGameMode.preGame, 0)
-				.addDefault("Select", -1)
-				.addChoice("Red", 1)
-				.addChoice("Blue", 2)
-				);
+		//devices.autoSelect		= ha.add(
+		//		new CBDashboardChooser<Integer>("Auto:")
+		//		.setTiming(CBGameMode.preGame, 0)
+		//		.addDefault("Select", -1)
+		//		.addChoice("Center", 1)
+		//		.addChoice("Left", 2)
+		//		.addChoice("Right", 3)
+		//		);
+		//devices.autoAlliance	= ha.add(
+		//		new CBDashboardChooser<Integer>("Alliance:")
+		//		.setTiming(CBGameMode.preGame, 0)
+		//		.addDefault("Select", -1)
+		//		.addChoice("Red", 1)
+		//		.addChoice("Blue", 2)
+		//		);
 
 		// Output devices
-		devices.driveMotorLeft1		= ha.add(new CBCANTalon(3));
-		devices.driveMotorLeft2		= ha.add(new CBCANTalon(4));
-		devices.driveMotorRight1	= ha.add(new CBCANTalon(1));
-		devices.driveMotorRight2	= ha.add(new CBCANTalon(2));
-		devices.gearMotorLeft		= ha.add(new CBCANTalon(5));
-		devices.gearMotorRight		= ha.add(new CBCANTalon(6).setInverted(true));
-		devices.climbMotorLeft		= ha.add(new CBCANTalon(7));
-		devices.climbMotorRight		= ha.add(new CBCANTalon(8).setInverted(true));
+		//devices.driveMotorLeft1		= ha.add(canBuilder.build(Devs.driveMotorLeft1)); //ha.add(new CBCANTalon(3));
+		//devices.driveMotorLeft2		= ha.add(canBuilder.build(Devs.driveMotorLeft2));
+		//devices.driveMotorRight1	= ha.add(canBuilder.build(Devs.driveMotorRight1));
+		//devices.driveMotorRight2	= ha.add(canBuilder.build(Devs.driveMotorRight2));
+		//devices.gearMotorLeft		= ha.add(canBuilder.build(Devs.gearMotorLeft));
+		//devices.gearMotorRight		= ha.add(canBuilder.build(Devs.gearMotorRight).setInverted(true));
+		//devices.climbMotorLeft		= ha.add(canBuilder.build(Devs.climbMotorLeft));
+		//devices.climbMotorRight		= ha.add(canBuilder.build(Devs.climbMotorRight).setInverted(true));
 
 		
 		// Co-processor Vision System
@@ -180,9 +259,9 @@ public class SWRobot extends Cyborg {
 					.addSpeedControllerArray(
 							new CBSrxArrayController()
 							.setDriveMode(CBDriveMode.Speed)
-							.addSpeedController(devices.driveMotorLeft1)
-							.addSpeedController(devices.driveMotorLeft2)
-							.setEncoder(devices.driveEncoderLeft)
+							.addSpeedController(builder.CBCANTalon(Devs.driveMotorLeft1))
+							.addSpeedController(builder.CBCANTalon(Devs.driveMotorLeft2))
+							.setEncoder(builder.CBEncoder(Devs.driveEncoderLefta, Devs.driveEncoderLeftb, EncodingType.k4X, true, 4*76.25/5865))
 							.setErrorCorrection(
 									new CBPIDErrorCorrection()
 									.setConstants(new double[]{0.08,0,0})
@@ -194,9 +273,9 @@ public class SWRobot extends Cyborg {
 					.addSpeedControllerArray(
 							new CBSrxArrayController()
 							.setDriveMode(CBDriveMode.Speed)
-							.addSpeedController(devices.driveMotorRight1)
-							.addSpeedController(devices.driveMotorRight2)
-							.setEncoder(devices.driveEncoderRight)
+							.addSpeedController(builder.CBCANTalon(Devs.driveMotorRight1))
+							.addSpeedController(builder.CBCANTalon(Devs.driveMotorRight2))
+							.setEncoder(builder.CBEncoder(Devs.driveEncoderRighta, Devs.driveEncoderRightb, EncodingType.k4X, true, 4*76.25/5865))
 							.setErrorCorrection(
 									new CBPIDErrorCorrection()
 									.setConstants(new double[]{0.08,0,0})
@@ -222,31 +301,45 @@ public class SWRobot extends Cyborg {
 		// Use pre-built Cyborg plug-in to map arcade drive control  
 		this.addTeleOpMapper(
 				new CBArcadeDriveMapper(this)
-				.setAxes(devices.forwardAxis, null, devices.rotationAxis) // No strafe axis
-				.setGyroLockButton(devices.gyroLockButton)
+				.setAxes(builder.CBAxis(Devs.forwardAxis).setDeadzone(0.1).setScale(-1.0), 
+						null, 
+						builder.CBAxis(Devs.rotationAxis).setDeadzone(0.1).setScale(-1.0))
+						// No strafe axis
+				.setGyroLockButton(builder.CBButton(Devs.gyroLockButton))
 				.setAxisScales(0, 40, 90) // no strafe, 40 inches/second, 90 degrees/second
 				);
 		// Use teleOp mappers for operator mapping
 		this.addTeleOpMapper(
 				new SWOperatorMapper(this)
-				.setClimbButton(devices.climbButton)
-				.setGearAutoCloseButton(devices.gearAutoCloseButton)
-				.setGearAutoOpenButton(devices.gearAutoOpenButton)
-				.setGearManualLeftCloseButton(devices.gearManualLeftCloseButton)
-				.setGearManualLeftOpenButton(devices.gearManualLeftOpenButton)
-				.setGearManualRightCloseButton(devices.gearManualRightCloseButton)
-				.setGearManualRightOpenButton(devices.gearManualRightOpenButton)
+				.setClimbButton(builder.CBButton(Devs.climbButton))
+				.setGearAutoCloseButton(builder.CBButton(Devs.gearAutoCloseButton))
+				.setGearAutoOpenButton(builder.CBButton(Devs.gearAutoOpenButton))
+				.setGearManualLeftCloseButton(builder.CBButton(Devs.gearManualLeftCloseButton))
+				.setGearManualLeftOpenButton(builder.CBButton(Devs.gearManualLeftOpenButton))
+				.setGearManualRightCloseButton(builder.CBButton(Devs.gearManualRightCloseButton))
+				.setGearManualRightOpenButton(builder.CBButton(Devs.gearManualRightOpenButton))
 				);
 		
 		// Use custom mappers for sensor/full-time mapping
 		this.addCustomMapper(
-				new SWSensorMapper(this)
-				.setAutoChooser(devices.autoSelect)
-				.setAllianceChooser(devices.autoAlliance)
-				.setGyroLockSource(devices.navx)
+			new SWSensorMapper(this)
+				.setAutoChooser(
+					new CBDashboardChooser<Integer>("Auto:")
+						.setTiming(CBGameMode.preGame, 0)
+						.addDefault("Select", -1)
+						.addChoice("Center", 1)
+						.addChoice("Left", 2)
+						.addChoice("Right", 3))
+				.setAllianceChooser(
+					new CBDashboardChooser<Integer>("Alliance:")
+						.setTiming(CBGameMode.preGame, 0)
+						.addDefault("Select", -1)
+						.addChoice("Red", 1)
+						.addChoice("Blue", 2))
+				.setGyroLockSource(new CBNavX(SPI.Port.kMXP))
 				.setDrivetrain(driveTrainController)
 				//.setDriveEncoders(devices.driveEncoderLeft, devices.driveEncoderRight)
-				.setLimitSwitches(devices.leftOpenSwitch, devices.leftCloseSwitch, devices.rightOpenSwitch, devices.rightCloseSwitch)
+				.setLimitSwitches(builder.CBDigitalInput(Devs.leftOpenSwitch), builder.CBDigitalInput(Devs.leftCloseSwitch), builder.CBDigitalInput(Devs.rightOpenSwitch), builder.CBDigitalInput(Devs.rightCloseSwitch))
 				);
 
 		
@@ -260,11 +353,11 @@ public class SWRobot extends Cyborg {
 				.setClimbMotors(
 						new CBSrxArrayController()
 						.setDriveMode(CBDriveMode.Power)
-						.addSpeedController(devices.climbMotorLeft)
-						.addSpeedController(devices.climbMotorRight)
+						.addSpeedController(builder.CBCANTalon(Devs.climbMotorLeft))
+						.addSpeedController(builder.CBCANTalon(Devs.climbMotorRight).setInverted(true))
 						)
-				.setLeftMotor(ha.getSpeedController(devices.gearMotorLeft))
-				.setRightMotor(ha.getSpeedController(devices.gearMotorRight))
+				.setLeftMotor(builder.CBCANTalon(Devs.gearMotorLeft))
+				.setRightMotor(builder.CBCANTalon(Devs.gearMotorRight).setInverted(true))
 				);
 		
 		//

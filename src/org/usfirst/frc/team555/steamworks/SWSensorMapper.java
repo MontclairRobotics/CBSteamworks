@@ -6,6 +6,7 @@ import org.montclairrobotics.cyborg.data.CBStdDriveRequestData;
 import org.montclairrobotics.cyborg.devices.CBDashboardChooser;
 import org.montclairrobotics.cyborg.devices.CBDeviceId;
 import org.montclairrobotics.cyborg.devices.CBDigitalInput;
+import org.montclairrobotics.cyborg.devices.CBNavX;
 import org.montclairrobotics.cyborg.devices.CBNavXYawSource;
 import org.montclairrobotics.cyborg.mappers.CBCustomMapper;
 
@@ -61,20 +62,18 @@ public class SWSensorMapper extends CBCustomMapper {
 		}
 	}
 	
-	public SWSensorMapper setGyroLockSource(CBDeviceId navxId) {
-		navxYawSource = new CBNavXYawSource(navxId); 
+	public SWSensorMapper setGyroLockSource(CBNavX navx) {
+		navxYawSource = new CBNavXYawSource(navx); 
 		return this;
 	}
 
-	@SuppressWarnings("unchecked")
-	public SWSensorMapper setAutoChooser(CBDeviceId chooserId) {
-		this.autoChooser = (CBDashboardChooser<Integer>)Cyborg.hardwareAdapter.getDevice(chooserId);
+	public SWSensorMapper setAutoChooser(CBDashboardChooser<Integer> chooser) {
+		this.autoChooser = chooser; //(CBDashboardChooser<Integer>)Cyborg.hardwareAdapter.getDevice(chooserId);
 		return this;
 	}
 
-	@SuppressWarnings("unchecked")
-	public SWSensorMapper setAllianceChooser(CBDeviceId chooserId) {
-		this.allianceChooser = (CBDashboardChooser<Integer>)Cyborg.hardwareAdapter.getDevice(chooserId);
+	public SWSensorMapper setAllianceChooser(CBDashboardChooser<Integer> chooser) {
+		this.allianceChooser = chooser; //(CBDashboardChooser<Integer>)Cyborg.hardwareAdapter.getDevice(chooserId);
 		return this;
 	}
 
@@ -98,4 +97,12 @@ public class SWSensorMapper extends CBCustomMapper {
 		return this;
 	}
 
+	public SWSensorMapper setLimitSwitches(CBDigitalInput leftOpenSwitch, CBDigitalInput leftCloseSwitch, 
+			CBDigitalInput rightOpenSwitch, CBDigitalInput rightCloseSwitch) {
+		this.leftOpenSwitch = leftOpenSwitch;
+		this.leftCloseSwitch = leftCloseSwitch;
+		this.rightOpenSwitch = rightOpenSwitch;
+		this.rightCloseSwitch = rightCloseSwitch;
+		return this;
+	}
 }
